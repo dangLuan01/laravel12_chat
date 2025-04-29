@@ -6,9 +6,6 @@ use App\Models\Admin;
 use App\Models\Chat;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
@@ -49,25 +46,25 @@ class SendAdminMessage implements ShouldBroadcastNow
 
         if ($admin) {
             return [
-                'message' => $this->message->message,
-                'receiver_id' => $this->message->receiver_id,
-                'sender_id' => $this->message->sender_id,
+                'message'       => $this->message->message,
+                'receiver_id'   => $this->message->receiver_id,
+                'sender_id'     => $this->message->sender_id,
                 'admin' => [
-                    'id' => $admin->id,
-                    'name' => $admin->name,
-                    'image' => asset('storage/default-avatar.jpg'),
+                    'id'        => $admin->id,
+                    'name'      => $admin->name,
+                    'image'     => asset('storage/default-avatar.jpg'),
                 ],
                 'created_at' => $this->message->created_at,
             ];
         } else {
             return [
-                'message' => $this->message->message,
-                'receiver_id' => $this->message->receiver_id,
-                'sender_id' => $this->message->sender_id,
+                'message'       => $this->message->message,
+                'receiver_id'   => $this->message->receiver_id,
+                'sender_id'     => $this->message->sender_id,
                 'admin' => [
-                    'id' => null,
-                    'name' => 'Unknown Admin',
-                    'image' => asset('storage/default-avatar.jpg'),
+                    'id'        => null,
+                    'name'      => 'Unknown Admin',
+                    'image'     => asset('storage/default-avatar.jpg'),
                 ],
                 'created_at' => $this->message->created_at,
             ];

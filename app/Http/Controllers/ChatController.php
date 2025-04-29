@@ -13,7 +13,7 @@ class ChatController extends Controller
     public function fetchMessagesFromUserToAdmin(Request $request)
     {
         $receiverId = $request->input('receiver_id');
-        $sellerId = session('LoggedUserInfo');
+        $sellerId   = session('LoggedUserInfo');
     
         $messages = Chat::where(function($query) use ($sellerId, $receiverId) {
             $query->where('sender_id', $sellerId)
@@ -30,16 +30,16 @@ class ChatController extends Controller
     {
         // Validate the incoming request data
         $request->validate([
-            'message' => 'required|string',
-            'receiver_id' => 'required|exists:admins,id',
+            'message'       => 'required|string',
+            'receiver_id'   => 'required|exists:admins,id',
         ]);
     
         // Create a new chat message
-        $chat = new Chat();
-        $chat->sender_id = session('LoggedUserInfo');
-        $chat->receiver_id = $request->input('receiver_id');
-        $chat->message = $request->input('message');
-        $chat->seen = 0; // Default to not seen
+        $chat               = new Chat();
+        $chat->sender_id    = session('LoggedUserInfo');
+        $chat->receiver_id  = $request->input('receiver_id');
+        $chat->message      = $request->input('message');
+        $chat->seen         = 0; // Default to not seen
         $chat->save();
     
         // Broadcast the message using the SendUserMessage event
@@ -49,16 +49,11 @@ class ChatController extends Controller
         return response()->json(['success' => true, 'message' => 'Message sent successfully']);
     }
     
-
-
-
-
-
 public function sendMessage(Request $request)
 {
     $request->validate([
-        'message' => 'required|string',
-        'receiver_id' => 'required|integer|exists:users,id', // Ensure the receiver_id is a valid user id
+        'message'       => 'required|string',
+        'receiver_id'   => 'required|integer|exists:users,id', // Ensure the receiver_id is a valid user id
     ]);
 
     $LoggedAdminInfo = Admin::find(session('LoggedAdminInfo'));
@@ -69,10 +64,10 @@ public function sendMessage(Request $request)
         ]);
     }
 
-    $message = new Chat();
-    $message->sender_id = $LoggedAdminInfo->id;
-    $message->receiver_id = $request->receiver_id;
-    $message->message = $request->message;
+    $message                = new Chat();
+    $message->sender_id     = $LoggedAdminInfo->id;
+    $message->receiver_id   = $request->receiver_id;
+    $message->message       = $request->message;
     $message->save();
     broadcast(new SendAdminMessage($message))->toOthers();
 
@@ -86,8 +81,8 @@ public function sendMessage(Request $request)
         $receiverId = $request->input('receiver_id');
         
         // Fetch the logged-in admin using the session
-        $adminId = session('LoggedAdminInfo');
-        $LoggedAdminInfo = Admin::find($adminId);
+        $adminId            = session('LoggedAdminInfo');
+        $LoggedAdminInfo    = Admin::find($adminId);
 
         if (!$LoggedAdminInfo) {
             return response()->json([

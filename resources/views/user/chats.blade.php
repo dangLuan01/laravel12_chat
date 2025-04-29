@@ -5,7 +5,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Skydash Admin</title>
+    <title>Skydash User</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -92,7 +92,6 @@
         border: 1px solid #ddd;
         border-radius: 5px;
         background-color: #ffffff;
-        ;
         margin-bottom: 10px;
     }
 
@@ -266,7 +265,6 @@
                     <ul class="list-group list-group-flush">
                         @foreach ($admins as $admin)
                         <li class="list-group-item d-flex align-items-center chat-item">
-                            <img src="{{ asset('storage/' . $admin->picture) }}" class="profile_img rounded-circle mr-3" style="width: 40px; height: 40px;" alt="Profile Picture">
                             <div class="profile_info">
                                 <span class="profile_name font-weight-bold">{{ $admin->name }}</span>
                                 <span class="id" style="display: none;">{{ $admin->id }}</span>
@@ -283,7 +281,6 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white">
                     <div class="d-flex align-items-center">
-                        <img id="chat_img" src="" class="rounded-circle mr-3" alt="Profile Picture" style="width: 40px; height: 40px;">
                         <h4 class="mb-0" id="chat_name">Chatting with</h4>
                     </div>
                 </div>
@@ -374,43 +371,40 @@
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pusher/7.0.3/pusher.min.js"></script>
         <script>
-    // Initialize Pusher
-    var pusher = new Pusher('8ba2e0838a21a8c07a68', {
-        cluster: 'ap1',
-        encrypted: true
-    });
-
-    // Subscribe to the 'admin-messages' channel
-    var channel = pusher.subscribe('admin-messages');
-
-    // Bind to the 'admin-message' event
-    channel.bind('admin-message', function(data) {
-        console.log('Message received:', data);
-
-        let senderId = data.sender_id;
-        let message = data.message;
-        let senderName = data.admin.name;
-        //let senderImage = data.admin.image;
-        let messageTime = new Date(data.created_at).toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit'
+        // Initialize Pusher
+        var pusher = new Pusher('8ba2e0838a21a8c07a68', {
+            cluster: 'ap1',
+            encrypted: true
         });
 
-        // Create message HTML with proper asset URL
-        let messageHtml = `
-            <div class="chat-message receiver"> <!-- Left alignment for received messages -->
-                <div class="message-avatar">
-                    <img src="#" class="rounded-circle avatar" alt="${senderName} Avatar">
-                </div>
-                <div class="message-content">
-                    <p><strong>${senderName}:</strong> ${message}</p>
-                    <div class="timestamp">${messageTime}</div>
-                </div>
-            </div>`;
+        // Subscribe to the 'admin-messages' channel
+        var channel = pusher.subscribe('admin-messages');
 
-        // Append message to chat container
-        document.getElementById('chatMessageContainer').insertAdjacentHTML('beforeend', messageHtml);
-    });
+        // Bind to the 'admin-message' event
+        channel.bind('admin-message', function(data) {
+            console.log('Message received:', data);
+
+            let senderId = data.sender_id;
+            let message = data.message;
+            let senderName = data.admin.name;
+            //let senderImage = data.admin.image;
+            let messageTime = new Date(data.created_at).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            // Create message HTML with proper asset URL
+            let messageHtml = `
+                <div class="chat-message receiver"> <!-- Left alignment for received messages -->
+                    <div class="message-content">
+                        <p><strong>${senderName}:</strong> ${message}</p>
+                        <div class="timestamp">${messageTime}</div>
+                    </div>
+                </div>`;
+
+            // Append message to chat container
+            document.getElementById('chatMessageContainer').insertAdjacentHTML('beforeend', messageHtml);
+        });
 </script> 
     <!-- JavaScript to handle profile card click -->
     <script>
@@ -446,9 +440,6 @@ $(document).ready(function() {
 
                     let messageHtml = `
                         <div class="chat-message ${isSender ? 'sender' : 'receiver'}">
-                            <div class="message-avatar">
-                                <img src="${userAvatar}" class="rounded-circle avatar" alt="User Avatar">
-                            </div>
                             <div class="message-content">
                                 <p><strong>${userName}:</strong> ${message.message}</p>
                                 <div class="timestamp">${messageTime}</div>
@@ -467,70 +458,67 @@ $(document).ready(function() {
     });
 
     $('#messageForm').on('submit', function(e) {
-    e.preventDefault();
+        e.preventDefault();
 
-    let message = $('#messageInput').val().trim();
-    let receiverId = $('#receiver_id').val();
+        let message = $('#messageInput').val().trim();
+        let receiverId = $('#receiver_id').val();
 
-    if (message === "") {
-        alert("Message cannot be empty.");
-        return;
-    }
-
-    $.ajax({
-        type: 'POST',
-        url: '{{ route('send.Messageofsellertoadmin') }}',
-        data: {
-            _token: $('input[name="_token"]').val(),
-            message: message,
-            receiver_id: receiverId
-        },
-        beforeSend: function() {
-            // Disable the send button and change its text to "Sending..."
-            $('#sendMessageButton').text('Sending...').attr('disabled', true);
-        },
-        success: function(response) {
-            if (response.success) {
-                toastr.success(response.message, "Success");
-                $('#messageInput').val(''); // Clear the input
-
-                let userAvatar = '{{ asset('storage/avatar.jpg') }}';
-                let userName = '{{ $LoggedUserInfo->name }}';
-
-                let messageTime = new Date().toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-
-                let messageHtml = `
-                    <div class="chat-message sender">
-                        <div class="message-avatar">
-                            <img src="${userAvatar}" class="rounded-circle avatar" alt="User Avatar">
-                        </div>
-                        <div class="message-content">
-                            <p><strong>${userName}:</strong> ${message}</p>
-                            <div class="timestamp">${messageTime}</div>
-                        </div>
-                    </div>`;
-
-                $('#chatMessageContainer').append(messageHtml);
-
-                // Scroll to the bottom of the chat container after sending a message
-                $('#chatMessageContainer').scrollTop($('#chatMessageContainer')[0].scrollHeight);
-            } else {
-                toastr.error(response.message, "Error");
-            }
-        },
-        error: function(xhr) {
-            console.error('Error:', xhr.responseJSON.message);
-            toastr.error('Failed to send message', "Error");
-        },
-        complete: function() {
-            // Re-enable the send button and change its text back to "Send"
-            $('#sendMessageButton').text('Send').attr('disabled', false);
+        if (message === "") {
+            alert("Message cannot be empty.");
+            return;
         }
+
+        $.ajax({
+            type: 'POST',
+            url: '{{ route('send.Messageofsellertoadmin') }}',
+            data: {
+                _token: $('input[name="_token"]').val(),
+                message: message,
+                receiver_id: receiverId
+            },
+            beforeSend: function() {
+                // Disable the send button and change its text to "Sending..."
+                $('#sendMessageButton').text('Sending...').attr('disabled', true);
+            },
+            success: function(response) {
+                if (response.success) {
+                    toastr.success(response.message, "Success");
+                    $('#messageInput').val(''); // Clear the input
+
+                    let userAvatar = '{{ asset('storage/avatar.jpg') }}';
+                    let userName = '{{ $LoggedUserInfo->name }}';
+
+                    let messageTime = new Date().toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    let messageHtml = `
+                        <div class="chat-message sender">
+                            <div class="message-content">
+                                <p><strong>${userName}:</strong> ${message}</p>
+                                <div class="timestamp">${messageTime}</div>
+                            </div>
+                        </div>`;
+
+                    $('#chatMessageContainer').append(messageHtml);
+
+                    // Scroll to the bottom of the chat container after sending a message
+                    $('#chatMessageContainer').scrollTop($('#chatMessageContainer')[0].scrollHeight);
+                } else {
+                    toastr.error(response.message, "Error");
+                }
+            },
+            error: function(xhr) {
+                console.error('Error:', xhr.responseJSON.message);
+                toastr.error('Failed to send message', "Error");
+            },
+            complete: function() {
+                // Re-enable the send button and change its text back to "Send"
+                $('#sendMessageButton').text('Send').attr('disabled', false);
+            }
+        });
     });
-});
 });
 </script>
 

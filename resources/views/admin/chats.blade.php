@@ -5,7 +5,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Skydash Admin</title>
+    <title>Admin-Chats</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
@@ -337,7 +337,6 @@
                                     @if ($chat->sender_id == session('LoggedAdminInfo'))
                                     <!-- Display receiver profile -->
                                     @if ($chat->receiver)
-                                    <img src="{{ asset('storage/' . $chat->receiver->picture) }}" class="profile_img rounded-circle mr-3" style="width: 40px; height: 40px;" alt="Profile Picture">
                                     <div class="profile_info">
                                         <span class="profile_name font-weight-bold">{{ $chat->receiver->name }}</span>
                                     </div>
@@ -349,7 +348,6 @@
                                     @else
                                     <!-- Display sender profile -->
                                     @if ($chat->sender)
-                                    <img src="{{ asset('storage/' . $chat->sender->picture) }}" class="profile_img rounded-circle mr-3" style="width: 40px; height: 40px;" alt="Profile Picture">
                                     <div class="profile_info">
                                         <span class="profile_name font-weight-bold">{{ $chat->sender->name }}</span>
                                     </div>
@@ -373,7 +371,6 @@
                     <div class="card shadow-sm">
                         <div class="card-header bg-primary text-white">
                             <div class="d-flex align-items-center">
-                                <img id="chat_img" src="" class="rounded-circle mr-3" alt="Profile Picture" style="width: 40px; height: 40px;">
                                 <h4 class="mb-0" id="chat_name">Chatting with</h4>
                             </div>
                         </div>
@@ -489,9 +486,6 @@
             // Create message HTML with proper asset URL
             let messageHtml = `
                 <div class="chat-message">
-                    <div class="message-avatar">
-                        <img src="${senderImage}" class="rounded-circle" alt="${senderName} Avatar">
-                    </div>
                     <div class="message-content">
                         <p><strong>${senderName}:</strong> ${messageText}</p>
                         <div class="timestamp">${messageTime}</div>
@@ -550,9 +544,6 @@ $(document).ready(function() {
 
                     let messageHtml = `
                         <div class="chat-message ${isSender ? 'sender' : 'receiver'}">
-                            <div class="message-avatar">
-                                <img src="${userAvatar}" class="rounded-circle avatar" alt="User Avatar">
-                            </div>
                             <div class="message-content">
                                 <p><strong>${userName}:</strong> ${message.message}</p>
                                 <div class="timestamp">${messageTime}</div>
@@ -612,9 +603,6 @@ $(document).ready(function() {
 
                     let messageHtml = `
                         <div class="chat-message sender">
-                            <div class="message-avatar">
-                                <img src="${userAvatar}" class="rounded-circle avatar" alt="User Avatar">
-                            </div>
                             <div class="message-content">
                                 <p><strong>${userName}:</strong> ${message}</p>
                                 <div class="timestamp">${messageTime}</div>

@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Testing\Fluent\Concerns\Has;
 
 class AdminController extends Controller
 {
@@ -17,8 +16,8 @@ class AdminController extends Controller
     }
     public function login() {
         return view("admin.login");
-    }public function chats()
-    {
+    }
+    public function chats(){
         $LoggedAdminInfo = Admin::find(session('LoggedAdminInfo'));
         if (!$LoggedAdminInfo) {
             return redirect()->route('admin.login')->with('fail', 'You must be logged in to access the dashboard');
@@ -54,9 +53,9 @@ class AdminController extends Controller
     
         // Pass the logged-in admin's information and chats to the view
         return view('admin.chats', [
-            'LoggedAdminInfo' => $LoggedAdminInfo,
-            'chats' => $allChats,
-            'users' => $user
+            'LoggedAdminInfo'   => $LoggedAdminInfo,
+            'chats'             => $allChats,
+            'users'             => $user
         ]);
     }
     

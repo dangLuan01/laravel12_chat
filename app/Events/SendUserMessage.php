@@ -6,9 +6,6 @@ use App\Models\Chat;
 use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
@@ -52,25 +49,25 @@ class SendUserMessage implements ShouldBroadcastNow
 
         if ($user) {
             return [
-                'message' => $this->message->message,
-                'receiver_id' => $this->message->receiver_id,
-                'sender_id' => $this->message->sender_id,
+                'message'       => $this->message->message,
+                'receiver_id'   => $this->message->receiver_id,
+                'sender_id'     => $this->message->sender_id,
                 'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'image' => asset('storage/avatar.jpg'), // Assuming 'picture' is the image field
+                    'id'        => $user->id,
+                    'name'      => $user->name,
+                    'image'     => asset('storage/avatar.jpg'), // Assuming 'picture' is the image field
                 ],
                 'created_at' => $this->message->created_at,
             ];
         } else {
             return [
-                'message' => $this->message->message,
-                'receiver_id' => $this->message->receiver_id,
-                'sender_id' => $this->message->sender_id,
-                'user' => [
-                    'id' => null,
-                    'name' => 'Unknown User',
-                    'image' => asset('storage/avatar.jpg'), // Default image if user is not found
+                'message'       => $this->message->message,
+                'receiver_id'   => $this->message->receiver_id,
+                'sender_id'     => $this->message->sender_id,
+                'user'  => [
+                    'id'        => null,
+                    'name'      => 'Unknown User',
+                    'image'     => asset('storage/avatar.jpg'), // Default image if user is not found
                 ],
                 'created_at' => $this->message->created_at,
             ];

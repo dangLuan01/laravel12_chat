@@ -12,23 +12,23 @@ class UserController extends Controller
      public function updateProfile(Request $request)
     {
         $userId = session('LoggedUserInfo');
-        $user = User::find($userId);
+        $user   = User::find($userId);
     
         if (!$user) {
             return redirect('user/login')->with('fail', 'You must be logged in to update the profile');
         }
     
         $request->validate([
-            'name' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:15',
-            'bio' => 'nullable|string',
-            'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'name'          => 'required|string|max:255',
+            'phone_number'  => 'required|string|max:15',
+            'bio'           => 'nullable|string',
+            'picture'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
     
         // Update user details
-        $user->name = $request->name;
+        $user->name         = $request->name;
         $user->phone_number = $request->phone_number;
-        $user->bio = $request->bio;
+        $user->bio          = $request->bio;
     
         // Save the user profile updates
         $user->save();
@@ -64,7 +64,7 @@ class UserController extends Controller
     
         return view('user.chats', [
             'LoggedUserInfo' => $LoggedUserInfo,
-            'admins' => $admins // Pass only admins to the view
+            'admins'         => $admins // Pass only admins to the view
         ]);
     }
     
@@ -128,8 +128,8 @@ class UserController extends Controller
     public function check(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:5|max:12'
+            'email'     => 'required|email',
+            'password'  => 'required|min:5|max:12'
         ]);
 
         $userInfo = User::where('email', $request->email)->first();
@@ -159,12 +159,9 @@ class UserController extends Controller
         }
         session()->flush();
 
-         return redirect()->route('user.dashboard');
+        return redirect()->route('user.dashboard');
     }
     
- 
-
-
     public function save(Request $request)
     {
         $request->validate([
@@ -176,7 +173,7 @@ class UserController extends Controller
             'password.min' => 'Password must be at least 8 characters long.',
         ]);
 
-        $user = User::create([
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
